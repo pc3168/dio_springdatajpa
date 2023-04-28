@@ -45,12 +45,12 @@ public class PedidoService {
 
         Cliente cliente = clienteService.buscarPorId(clienteId);
 
+        produtos = atualizaListaProdutos(produtos);
         double total = totalProdutos(produtos);
-        List<Produto> produtosAtuais = atualizaListaProdutos(produtos);
 
         pedido.setTotal(new BigDecimal(total));
         pedido.setCliente(cliente);
-        pedido.setProdutos(produtosAtuais);
+        pedido.setProdutos(produtos);
         return pedidoRepository.save(pedido);
     }
 
@@ -62,10 +62,7 @@ public class PedidoService {
 
     private double totalProdutos(List<Produto> produtos) {
         return produtos.stream()
-                .mapToDouble(e -> {
-                    Produto produto = produtoService.buscarPorId(e.getId());
-                    return produto.getPreco().doubleValue();
-                })
+                .mapToDouble(e -> e.getPreco().doubleValue())
                 .sum();
     }
 
